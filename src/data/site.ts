@@ -20,8 +20,8 @@ export type NavItem = {
 };
 
 export const NAV: readonly NavItem[] = [
-  { href: "/business", label: "事業内容", ready: false },
-  { href: "/facility", label: "設備・工程", ready: false },
+  { href: "/business", label: "事業内容", ready: true },
+  { href: "/facility", label: "設備・工程", ready: true },
   { href: "/technology", label: "技術", ready: false },
   { href: "/quality", label: "品質保証", ready: false },
   { href: "/company", label: "会社案内", ready: false },
