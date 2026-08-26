@@ -1,0 +1,110 @@
+@import "tailwindcss";
+
+/*
+  配色は工場の内側から採る(SPEC N-05)。製造業サイトにありがちな
+  「白地に青」ではなく、基板の実物から色を取った一枚に決め打ちする。
+  レジストの緑は安く見えるので使わない。明暗の切り替えは持たない。
+*/
+@theme {
+  --color-tetsu: #0f1620; /* 鉄紺 — 一番深い背景 */
+  --color-ban: #16202c; /* 盤 — 面 */
+  --color-suji: #24313f; /* 筋 — 境界線 */
+  --color-do: #c98a52; /* 銅 — 主アクセント(銅箔・はんだ) */
+  --color-hanare: #e6b17e; /* 明るい銅 — 強調 */
+  --color-hakuro: #eef2f6; /* 白露 — 本文 */
+  --color-usu: #94a3b4; /* 薄鼠 — 副次テキスト */
+  --color-seiji: #6fa8a0; /* 青磁 — 正常・合格 */
+  --color-akane: #d0655c; /* 茜 — 不良・警告 */
+
+  --font-gothic: var(--font-zen), "Hiragino Sans", "Yu Gothic", sans-serif;
+  --font-mono: var(--font-mono-jp), ui-monospace, "SFMono-Regular", monospace;
+}
+
+:root {
+  color-scheme: dark;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background-color: var(--color-tetsu);
+  color: var(--color-hakuro);
+  font-family: var(--font-gothic);
+  /*
+    面の単調さを消すための、ごく薄い二重のラジアルグラデーション。
+    画像を一枚も読み込まない(N-02)。
+  */
+  background-image:
+    radial-gradient(
+      ellipse 70% 45% at 50% -8%,
+      rgb(201 138 82 / 0.10),
+      transparent 70%
+    ),
+    radial-gradient(
+      ellipse 55% 40% at 8% 100%,
+      rgb(111 168 160 / 0.07),
+      transparent 70%
+    );
+  background-attachment: fixed;
+  line-height: 1.9;
+  text-underline-offset: 0.25em;
+  /* フリート共通の固定フッタに隠れないための逃げ(N-06) */
+  padding-bottom: 3.5rem;
+}
+
+h1,
+h2,
+h3 {
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  line-height: 1.5;
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-do);
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+
+/* 面。盤の色に筋の色の細い枠 */
+.panel {
+  background-color: var(--color-ban);
+  border: 1px solid var(--color-suji);
+  border-radius: 3px;
+}
+
+/* 数字を並べるところは等幅にして桁を揃える */
+.tabular {
+  font-variant-numeric: tabular-nums;
+}
+
+/* fleet: fixed footer */
+.fleet-footer {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 40;
+  background-color: color-mix(in srgb, var(--color-tetsu) 92%, transparent);
+  border-top: 1px solid var(--color-suji);
+  backdrop-filter: blur(6px);
+  font-size: 0.7rem;
+  line-height: 1.6;
+  padding: 0.5rem 1rem;
+  text-align: center;
+  color: var(--color-usu);
+}
+.fleet-footer a {
+  color: var(--color-usu);
+  text-decoration: none;
+}
+.fleet-footer a:hover {
+  color: var(--color-do);
+  text-decoration: underline;
+}
+.fleet-footer .sep {
+  opacity: 0.45;
+  margin: 0 0.5rem;
+}
