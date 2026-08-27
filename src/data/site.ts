@@ -25,8 +25,8 @@ export const NAV: readonly NavItem[] = [
   { href: "/technology", label: "技術", ready: true },
   { href: "/quality", label: "品質保証", ready: true },
   { href: "/company", label: "会社案内", ready: true },
-  { href: "/recruit", label: "採用", ready: false },
-  { href: "/contact", label: "お問い合わせ", ready: false },
+  { href: "/recruit", label: "採用", ready: true },
+  { href: "/contact", label: "お問い合わせ", ready: true },
 ] as const;
 
 export function readyNav(): NavItem[] {

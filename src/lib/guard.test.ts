@@ -33,6 +33,35 @@ const shippedFiles = allFiles.filter(
   (f) => SHIPPED.test(f) && !EXCLUDED.test(f),
 );
 
+/**
+ * ビルド時にだけ外部へ出るファイル。SPEC N-07 の例外はここに限る。
+ * 増やすときは SPEC を先に直すこと。
+ */
+const BUILD_TIME_FETCH = ["lib/og-font.ts"];
+
+/** Windows の区切りを URL 風に揃える */
+function relPath(file: string): string {
+  return path.relative(SRC, file).split(path.sep).join("/");
+}
+
+const runtimeFiles = shippedFiles.filter(
+  (f) => !BUILD_TIME_FETCH.includes(relPath(f)),
+);
+
+/** 実行時に動くファイルだけを走査する */
+function runtimeOffenders(pattern: RegExp): string[] {
+  const hits: string[] = [];
+  for (const file of runtimeFiles) {
+    const lines = stripComments(readFileSync(file, "utf8")).split("\n");
+    lines.forEach((line, i) => {
+      if (pattern.test(line)) {
+        hits.push(`${path.relative(SRC, file)}:${i + 1}  ${line.trim()}`);
+      }
+    });
+  }
+  return hits;
+}
+
 /** 禁止パターンに触れた「ファイル:行」を返す */
 function offenders(pattern: RegExp): string[] {
   const hits: string[] = [];
@@ -147,6 +176,37 @@ describe("架空明示ゲート(T-020〜T-025 / SPEC §6・N-02)", () => {
           false,
         );
       }
+    }
+  });
+});
+
+describe("実行時の外部通信(T-153 / N-07)", () => {
+  const EXTERNAL = /\bfetch\s*\(|XMLHttpRequest|new\s+WebSocket|navigator\.sendBeacon/;
+
+  it("T-153 実行時に外部へ出る呼び出しを持たない", () => {
+    // 静的書き出しなので、実行時の通信はそのまま「動かない機能」になる。
+    // ビルド時の取得(OG 画像のフォント)だけを例外にしてある(SPEC N-07)。
+    expect(runtimeOffenders(EXTERNAL)).toEqual([]);
+  });
+
+  it("T-153 例外にしたファイルが実在する(名前だけ残った例外を防ぐ)", () => {
+    for (const b of BUILD_TIME_FETCH) {
+      const found = shippedFiles.some((f) => relPath(f) === b);
+      expect(found, `例外 ${b} に対応するファイルが無い`).toBe(true);
+    }
+  });
+
+  it("T-153 パターンが実際の呼び出しを捕まえる(陽性対照)", () => {
+    for (const bad of [
+      'await fetch("https://example.test")',
+      "const x = new XMLHttpRequest()",
+      'new WebSocket("wss://example.test")',
+      'navigator.sendBeacon("/x")',
+    ]) {
+      expect(EXTERNAL.test(bad), bad).toBe(true);
+    }
+    for (const good of ["prefetch(false)", "// fetch はビルド時だけ", "refetching"]) {
+      expect(EXTERNAL.test(good), good).toBe(false);
     }
   });
 });
