@@ -2,6 +2,12 @@ import { DEMOS } from "@/data/demos";
 import { HEADCOUNT } from "@/data/company";
 import { AoiDemo } from "@/components/AoiDemo";
 import { ScheduleDemo } from "@/components/ScheduleDemo";
+import { InventoryDemo } from "@/components/InventoryDemo";
+import {
+  FAILURE_BREAKDOWN,
+  PRACTICE_STATS,
+  PRINCIPLES,
+} from "@/data/practice";
 
 /**
  * 技術(F-09 / F-10 / F-11 / F-12)。この作品の主役のページ。
@@ -14,6 +20,7 @@ export function TechnologyView() {
   const it = HEADCOUNT.find((d) => d.id === "it")!;
   const aoi = DEMOS.find((d) => d.id === "aoi")!;
   const schedule = DEMOS.find((d) => d.id === "schedule")!;
+  const inventory = DEMOS.find((d) => d.id === "inventory")!;
   const upcoming = DEMOS.filter((d) => !d.ready);
 
   return (
@@ -95,27 +102,134 @@ export function TechnologyView() {
         </div>
       </section>
 
-      {/* 開発の進め方(F-12 の予告を兼ねる) */}
-      <section className="mx-auto max-w-6xl px-5 pb-16">
-        <div className="panel p-8">
-          <h2 className="text-xs tracking-[0.3em] text-do">
-            動くものより先に、確かめ方を決める
-          </h2>
-          <p className="mt-4 max-w-3xl text-sm leading-relaxed text-usu">
-            上のデモの ROC 曲線は、二つの独立した経路で同じ値に着くことを
-            確かめてあります。曲線を台形で積分して求めた AUC と、曲線を一切
-            経由せずに順位の対を総当たりして求めた AUC。この二つは数学的に
-            等しいはずのもので、実装が曲線の作り方を間違えていれば合いません。
+      {/* デモ 03 */}
+      <section className="border-t border-suji">
+        <div className="mx-auto max-w-6xl px-5 py-16">
+          <div className="flex flex-wrap items-baseline gap-x-4">
+            <h2 className="text-xs tracking-[0.3em] text-do">デモ 03</h2>
+            <p className="text-lg text-hakuro">{inventory.name}</p>
+          </div>
+          <p className="mt-4 max-w-3xl text-base text-hanare">
+            {inventory.lead}
           </p>
           <p className="mt-4 max-w-3xl text-sm leading-relaxed text-usu">
-            同じ関数をもう一度呼んで比べても、それは検算になりません。
-            受託開発でも同じ姿勢を取っています。何をもって正しいとするかを先に
-            決め、それが決められない要件は、決められないと申し上げます。
+            {inventory.problem}
           </p>
+
+          <div className="mt-10">
+            <InventoryDemo />
+          </div>
+
+          <div className="mt-8 grid gap-4 lg:grid-cols-2">
+            <p
+              role="note"
+              className="rounded border border-suji bg-ban/60 px-4 py-3 text-xs leading-relaxed text-usu"
+            >
+              {inventory.simulationNotice}
+            </p>
+            <p className="rounded border border-suji bg-ban/60 px-4 py-3 text-xs leading-relaxed text-usu">
+              <span className="text-do">この計算の確かめ方 — </span>
+              {inventory.oracle}
+            </p>
+          </div>
         </div>
       </section>
 
-      {/* これから載せるもの */}
+      {/* 開発の進め方(F-12) */}
+      <section className="border-t border-suji bg-ban/30">
+        <div className="mx-auto max-w-6xl px-5 py-16">
+          <h2 className="text-xs tracking-[0.3em] text-do">
+            AI エージェントを使った開発の進め方
+          </h2>
+          <p className="mt-4 max-w-3xl text-base text-hanare">
+            速く書けることより、間違いに早く気づけること。
+          </p>
+          <p className="mt-4 max-w-3xl text-sm leading-relaxed text-usu">
+            エージェントを使うと実装は速くなりますが、間違いも速く増えます。
+            当社が受託開発で置いているのは、書く速さを上げる仕組みではなく、
+            <span className="text-hanare">間違いが早く表に出る仕組み</span>
+            の方です。四つあります。
+          </p>
+
+          <ol className="mt-10 grid gap-6 lg:grid-cols-2">
+            {PRINCIPLES.map((p, i) => (
+              <li key={p.id} className="panel p-6">
+                <p className="tabular text-[0.65rem] tracking-widest text-do">
+                  {String(i + 1).padStart(2, "0")}
+                </p>
+                <h3 className="mt-2 text-base text-hakuro">{p.title}</h3>
+                <p className="mt-3 text-sm leading-relaxed text-usu">{p.body}</p>
+                <p className="mt-4 border-t border-suji pt-3 text-xs leading-relaxed text-hanare">
+                  {p.example}
+                </p>
+              </li>
+            ))}
+          </ol>
+
+          {/* 実測値。架空の実績ではなく、この作品そのものの記録 */}
+          <div className="mt-10 panel p-6">
+            <h3 className="text-xs tracking-[0.25em] text-do">
+              このサイト自体の記録
+            </h3>
+            <p className="mt-3 max-w-3xl text-sm leading-relaxed text-usu">
+              会社は架空ですが、
+              <span className="text-hanare">この作り方は実際のもの</span>
+              です。以下はこのサイトを作ったときの実測で、
+              リポジトリのループログを数え直した値です。
+              架空の実績と混ぜないよう、テストで突き合わせてあります。
+            </p>
+
+            <div className="mt-6 grid gap-px overflow-hidden rounded-sm border border-suji bg-suji sm:grid-cols-4">
+              <Stat value={PRACTICE_STATS.loops} unit="回" label="ループ" />
+              <Stat
+                value={PRACTICE_STATS.failures}
+                unit="件"
+                label="記録した失敗"
+              />
+              <Stat value={PRACTICE_STATS.tests} unit="件" label="テスト" />
+              <Stat
+                value={PRACTICE_STATS.harnessEntries}
+                unit="件"
+                label="仕組みの改訂"
+              />
+            </div>
+
+            <div className="mt-6">
+              <p className="text-xs tracking-[0.2em] text-do">失敗の内訳</p>
+              <ul className="mt-3 space-y-2">
+                {FAILURE_BREAKDOWN.map((f) => (
+                  <li key={f.code} className="flex items-center gap-3 text-sm">
+                    <span className="w-28 shrink-0 text-usu">{f.label}</span>
+                    {/* 帯は最大件数で正規化する。総数で割ると全部短くなる */}
+                    <span
+                      className="h-2 rounded-full bg-do"
+                      style={{
+                        width: `${(f.count / FAILURE_BREAKDOWN[0].count) * 100}%`,
+                      }}
+                    />
+                    <span className="tabular text-xs text-hanare">
+                      {f.count}
+                    </span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            <p className="mt-6 text-xs leading-relaxed text-usu">
+              失敗が多いことは隠しません。
+              <span className="text-hanare">
+                記録していない失敗は、次に同じ形で戻ってきます。
+              </span>
+              上の内訳で「テストの誤検出」と「テストの穴」が合わせて 8 件ある
+              — 検査そのものが間違っていた回数です。実装の誤りと同じくらい、
+              検査の誤りを疑う必要があります。
+            </p>
+          </div>
+        </div>
+      </section>
+
+      {/* これから載せるもの。全部公開したら消える */}
+      {upcoming.length > 0 && (
       <section className="mx-auto max-w-6xl px-5 pb-24">
         <h2 className="text-xs tracking-[0.3em] text-do">このあと載せるもの</h2>
         <ul className="mt-8 grid gap-6 lg:grid-cols-2">
@@ -137,6 +251,27 @@ export function TechnologyView() {
           ))}
         </ul>
       </section>
+      )}
     </>
+  );
+}
+
+function Stat({
+  value,
+  unit,
+  label,
+}: {
+  value: number;
+  unit: string;
+  label: string;
+}) {
+  return (
+    <div className="bg-ban px-5 py-4">
+      <p className="tabular text-2xl text-hakuro">
+        {value}
+        <span className="ml-1.5 text-xs text-usu">{unit}</span>
+      </p>
+      <p className="mt-1 text-xs text-usu">{label}</p>
+    </div>
   );
 }

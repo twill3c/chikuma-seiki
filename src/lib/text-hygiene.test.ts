@@ -51,6 +51,62 @@ const FOREIGN = {
 /** この検査自身は禁止文字を持たざるをえないので除外する */
 const SELF = "text-hygiene.test.ts";
 
+/**
+ * 行単位の除外マーカー。
+ *
+ * 混入した実例を文書に残そうとすると、その行が検査に引っかかる
+ * (loop_007 で AGENTS.md がそうなった)。実例を消すと教訓が痩せるので、
+ * **その行だけ**明示的に除外できるようにする。
+ *
+ * ただし黙って増えると検査が骨抜きになるので、
+ * **マーカーが実際に必要かどうかも検査する**(不要なマーカーは落とす)。
+ *
+ * マーカーは**コメントの形**でなければ効かない。ただの文字列として認めると、
+ * この仕組みを説明した散文(「`text-hygiene:allow` を付ける」)まで
+ * 印が付いたことになり、その行が「不要なマーカー」として落ちてしまう。
+ */
+const ALLOW = /(?:<!--|\/\/|\/\*)\s*text-hygiene:allow/;
+
+type Hit = { location: string; line: string; allowed: boolean };
+
+function scan(pattern: RegExp): Hit[] {
+  const hits: Hit[] = [];
+  for (const file of files) {
+    if (file.endsWith(SELF)) continue;
+    readFileSync(file, "utf8")
+      .split("\n")
+      .forEach((line, i) => {
+        if (pattern.test(line)) {
+          hits.push({
+            location: `${path.relative(ROOT, file)}:${i + 1}`,
+            line: line.trim().slice(0, 80),
+            allowed: ALLOW.test(line),
+          });
+        }
+      });
+  }
+  return hits;
+}
+
+/** マーカーの付いた全行(混入の有無を問わない) */
+function markedLines(): { location: string; line: string }[] {
+  const marked: { location: string; line: string }[] = [];
+  for (const file of files) {
+    if (file.endsWith(SELF)) continue;
+    readFileSync(file, "utf8")
+      .split("\n")
+      .forEach((line, i) => {
+        if (ALLOW.test(line)) {
+          marked.push({
+            location: `${path.relative(ROOT, file)}:${i + 1}`,
+            line: line.trim().slice(0, 80),
+          });
+        }
+      });
+  }
+  return marked;
+}
+
 describe("文字種の検査(HC-037)", () => {
   it("走査対象が実際に見つかっている", () => {
     // 0 件なら「合格」ではなく「検査していない」
@@ -59,22 +115,25 @@ describe("文字種の検査(HC-037)", () => {
 
   for (const [name, pattern] of Object.entries(FOREIGN)) {
     it(`日本語の本文に${name}が混ざらない`, () => {
-      const hits: string[] = [];
-      for (const file of files) {
-        if (file.endsWith(SELF)) continue;
-        readFileSync(file, "utf8")
-          .split("\n")
-          .forEach((line, i) => {
-            if (pattern.test(line)) {
-              hits.push(
-                `${path.relative(ROOT, file)}:${i + 1}  ${line.trim().slice(0, 80)}`,
-              );
-            }
-          });
-      }
+      const hits = scan(pattern)
+        .filter((h) => !h.allowed)
+        .map((h) => `${h.location}  ${h.line}`);
       expect(hits).toEqual([]);
     });
   }
+
+  it("除外マーカーが実際に必要な行にだけ付いている(骨抜き防止)", () => {
+    const needed = new Set(
+      Object.values(FOREIGN)
+        .flatMap((p) => scan(p))
+        .filter((h) => h.allowed)
+        .map((h) => h.location),
+    );
+    const stale = markedLines()
+      .filter((m) => !needed.has(m.location))
+      .map((m) => `${m.location}  ${m.line}`);
+    expect(stale, "混入していない行に除外マーカーが付いている").toEqual([]);
+  });
 
   it("各パターンが実際に混入を捕まえる(陽性対照)", () => {
     // 字形が似ているので、目で見ても違いが分からない。
