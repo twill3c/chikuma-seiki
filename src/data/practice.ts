@@ -28,7 +28,7 @@ export const PRINCIPLES: readonly Principle[] = [
     title: "失敗を、直す前に記録する",
     body: "気づいた瞬間に、何がどの段階で混入したかを分類して残します。直してからまとめて書くと、どこで入ったかの情報が失われます。記録するかどうかを実装者が判断してはいけません。軽微なものほど残します。",
     example:
-      "このサイトの制作では 25 件の失敗を記録しました。内訳は実装の誤り 8 件、テストの誤検出 5 件、環境の癖 4 件、道具の誤用 3 件、テストの穴 3 件、仕様の不備 2 件です。",
+      "このサイトの制作では 27 件の失敗を記録しました。内訳は実装の誤り 9 件、環境の癖 5 件、テストの誤検出 5 件、道具の誤用 3 件、テストの穴 3 件、仕様の不備 2 件です。",
   },
   {
     id: "harness",
@@ -51,17 +51,17 @@ export const PRINCIPLES: readonly Principle[] = [
  * 架空の会社の実績ではなく、この作品そのものの記録である。
  */
 export const PRACTICE_STATS = {
-  loops: 7,
-  failures: 25,
-  tests: 172,
+  loops: 8,
+  failures: 27,
+  tests: 177,
   harnessEntries: 5,
 } as const;
 
 /** 失敗の分類と件数。多い順 */
 export const FAILURE_BREAKDOWN = [
-  { code: "GEN-LOGIC", label: "実装の誤り", count: 8 },
+  { code: "GEN-LOGIC", label: "実装の誤り", count: 9 },
+  { code: "TOOL-ENV", label: "環境の癖", count: 5 },
   { code: "VERIF-FALSE", label: "テストの誤検出", count: 5 },
-  { code: "TOOL-ENV", label: "環境の癖", count: 4 },
   { code: "TOOL-MISUSE", label: "道具の誤用", count: 3 },
   { code: "VERIF-GAP", label: "テストの穴", count: 3 },
   { code: "SPEC-GAP/AMB", label: "仕様の不備", count: 2 },

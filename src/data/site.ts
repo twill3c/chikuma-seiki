@@ -39,10 +39,18 @@ export function readyNav(): NavItem[] {
  */
 export type FooterLink = { label: string; href: string | null };
 
+export const REPO_URL = "https://github.com/twill3c/chikuma-seiki";
+
 export const FLEET_FOOTER: readonly FooterLink[] = [
-  { label: "MIT License © 2026 坂田哲朗", href: null },
-  { label: "GitHub", href: null },
-  { label: "千曲精機の見方", href: null },
-  { label: "設計図", href: null },
+  { label: "MIT License © 2026 坂田哲朗", href: `${REPO_URL}/blob/main/LICENSE` },
+  { label: "GitHub", href: REPO_URL },
+  {
+    label: "千曲精機の見方",
+    href: "https://claude.ai/code/artifact/83999a9b-9795-4046-bb8e-4abde321abd6",
+  },
+  {
+    label: "設計図",
+    href: "https://claude.ai/code/artifact/11e0a957-b4af-4ced-8cdb-708aac365004",
+  },
   { label: "App Menu", href: "https://app-menu-amber.vercel.app/" },
 ] as const;
