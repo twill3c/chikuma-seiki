@@ -1,6 +1,7 @@
 import { DEMOS } from "@/data/demos";
 import { HEADCOUNT } from "@/data/company";
 import { AoiDemo } from "@/components/AoiDemo";
+import { ScheduleDemo } from "@/components/ScheduleDemo";
 
 /**
  * 技術(F-09 / F-10 / F-11 / F-12)。この作品の主役のページ。
@@ -12,6 +13,7 @@ import { AoiDemo } from "@/components/AoiDemo";
 export function TechnologyView() {
   const it = HEADCOUNT.find((d) => d.id === "it")!;
   const aoi = DEMOS.find((d) => d.id === "aoi")!;
+  const schedule = DEMOS.find((d) => d.id === "schedule")!;
   const upcoming = DEMOS.filter((d) => !d.ready);
 
   return (
@@ -60,6 +62,39 @@ export function TechnologyView() {
         </div>
       </section>
 
+      {/* デモ 02 */}
+      <section className="border-t border-suji">
+        <div className="mx-auto max-w-6xl px-5 py-16">
+          <div className="flex flex-wrap items-baseline gap-x-4">
+            <h2 className="text-xs tracking-[0.3em] text-do">デモ 02</h2>
+            <p className="text-lg text-hakuro">{schedule.name}</p>
+          </div>
+          <p className="mt-4 max-w-3xl text-base text-hanare">
+            {schedule.lead}
+          </p>
+          <p className="mt-4 max-w-3xl text-sm leading-relaxed text-usu">
+            {schedule.problem}
+          </p>
+
+          <div className="mt-10">
+            <ScheduleDemo />
+          </div>
+
+          <div className="mt-8 grid gap-4 lg:grid-cols-2">
+            <p
+              role="note"
+              className="rounded border border-suji bg-ban/60 px-4 py-3 text-xs leading-relaxed text-usu"
+            >
+              {schedule.simulationNotice}
+            </p>
+            <p className="rounded border border-suji bg-ban/60 px-4 py-3 text-xs leading-relaxed text-usu">
+              <span className="text-do">この計算の確かめ方 — </span>
+              {schedule.oracle}
+            </p>
+          </div>
+        </div>
+      </section>
+
       {/* 開発の進め方(F-12 の予告を兼ねる) */}
       <section className="mx-auto max-w-6xl px-5 pb-16">
         <div className="panel p-8">
@@ -87,7 +122,7 @@ export function TechnologyView() {
           {upcoming.map((d, i) => (
             <li key={d.id} className="panel p-6">
               <p className="text-xs tracking-[0.25em] text-do">
-                デモ {String(i + 2).padStart(2, "0")}
+                デモ {String(i + 3).padStart(2, "0")}
               </p>
               <h3 className="mt-2 text-lg text-hakuro">{d.name}</h3>
               <p className="mt-2 text-sm text-hanare">{d.lead}</p>
