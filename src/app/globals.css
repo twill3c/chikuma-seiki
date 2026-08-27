@@ -50,8 +50,9 @@ body {
   background-attachment: fixed;
   line-height: 1.9;
   text-underline-offset: 0.25em;
-  /* フリート共通の固定フッタに隠れないための逃げ(N-06) */
-  padding-bottom: 3.5rem;
+  /* フリート共通の固定フッタに隠れないための逃げ(N-06)。
+     断りの一行ぶんを含む高さ。長文なので狭い画面では折り返す */
+  padding-bottom: 5.5rem;
 }
 
 h1,
@@ -107,4 +108,26 @@ h3 {
 .fleet-footer .sep {
   opacity: 0.45;
   margin: 0 0.5rem;
+}
+/*
+  架空である旨。規約の 5 項目の**下**に一行として置く
+  (senoto-mori / hoshihata / sugi-nami と同じ型)。
+  画面幅によらず自分の行を占め、リンクより控えめな濃さにする。
+*/
+.fleet-footer__fiction {
+  margin: 0.15rem 0 0;
+  font-size: 0.66rem;
+  line-height: 1.7;
+  color: color-mix(in srgb, var(--color-usu) 72%, transparent);
+}
+
+/*
+  断りが折り返す幅では、逃げの余白も増やす。実測(2026-08-28):
+  480px 以上でフッタ 73px / 480px 未満で 109px。
+  余白が足りないと本文の末尾がフッタの下に隠れる。
+*/
+@media (max-width: 29.99rem) {
+  body {
+    padding-bottom: 7.5rem;
+  }
 }

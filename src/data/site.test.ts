@@ -1,17 +1,22 @@
 import { describe, expect, it } from "vitest";
-import { FLEET_FOOTER, NAV } from "./site";
+import { COPYRIGHT, FLEET_FOOTER, NAV } from "./site";
 
 describe("フッタとナビ(T-190 / F-16・N-06)", () => {
   it("T-190 フッタが規約どおり 5 項目である", () => {
     // フリート共通規約(koho-lens が正本): 5 項目・この並び
     expect(FLEET_FOOTER).toHaveLength(5);
     expect(FLEET_FOOTER.map((f) => f.label)).toEqual([
-      "MIT License © 2026 坂田哲朗",
+      "MIT License",
       "GitHub",
       "千曲精機の見方",
       "設計図",
       "App Menu",
     ]);
+    // 著作権表示はリンクの文言に含めない(規約: MIT License © 2026 坂田哲朗 ・ …)
+    expect(COPYRIGHT).toBe("© 2026 坂田哲朗");
+    for (const f of FLEET_FOOTER) {
+      expect(f.label, "リンク文言に著作権表示を混ぜない").not.toContain("©");
+    }
   });
 
   it("T-190 全項目がリンク先を持つ(公開待ちが残っていない)", () => {

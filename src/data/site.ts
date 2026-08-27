@@ -41,8 +41,14 @@ export type FooterLink = { label: string; href: string | null };
 
 export const REPO_URL = "https://github.com/twill3c/chikuma-seiki";
 
+/**
+ * 著作権表示。**リンクの文言には含めない**(規約: MIT License © 2026 坂田哲朗 ・ …)。
+ * リンクは LICENSE を指すので、リンク文言は権利の名前だけにする。
+ */
+export const COPYRIGHT = "© 2026 坂田哲朗";
+
 export const FLEET_FOOTER: readonly FooterLink[] = [
-  { label: "MIT License © 2026 坂田哲朗", href: `${REPO_URL}/blob/main/LICENSE` },
+  { label: "MIT License", href: `${REPO_URL}/blob/main/LICENSE` },
   { label: "GitHub", href: REPO_URL },
   {
     label: "千曲精機の見方",
