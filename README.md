@@ -33,4 +33,8 @@ MSYS_NO_PATHCONV=1 node harness/shot.mjs   # out/ を実ブラウザで撮る
 
 仕様は `SPEC.md`、テスト方針は `TEST_SPEC.md`、作業の規律は `AGENTS.md`。
 
-MIT License © 2026 坂田哲朗
+コードは MIT License © 2026 坂田哲朗([LICENSE](LICENSE))。
+
+`src/assets/latin-fallback.woff` は **Shippori Mincho B1 の欧文部分集合**で、
+**SIL Open Font License 1.1**(全文は [src/assets/OFL.txt](src/assets/OFL.txt)、
+経緯は [NOTICE](NOTICE))。

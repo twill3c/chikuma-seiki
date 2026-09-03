@@ -1,0 +1,44 @@
+NOTICE — chikuma-seiki(千曲精機)
+
+このアプリは配布物に**第三者のフォントの部分集合**を含みます。
+
+--------------------------------------------------------------------
+Shippori Mincho B1(欧文の部分集合)
+--------------------------------------------------------------------
+
+  同梱先: src/assets/latin-fallback.woff
+  用途:   OG 画像(next/og / Satori)の描画。Satori はフォントが一枚も無いと
+          落ちるため、欧文の部分集合を手元に置いてある
+  加工:   欧文だけに絞った部分集合
+
+  **ファイル名は用途を表しており、書体名を表していない。** 中身は姉妹プロジェクト
+  sugi-nami の `src/assets/shippori-latin.woff` と**バイト単位で同一**である
+  (sha256 一致・21,432 バイト・実測 2026-09-03)。すなわち Shippori Mincho B1 の
+  欧文部分集合であり、名前テーブルは部分集合化の際に落ちている。
+
+  ライセンス: **SIL Open Font License, Version 1.1**
+              全文は src/assets/OFL.txt(Google Fonts の
+              ofl/shipporiminchob1/OFL.txt を複製)
+
+  Copyright 2021 The Shippori Mincho Project Authors
+  (https://github.com/fontdasu/ShipporiMincho)
+
+  部分集合は OFL にいう Modified Version にあたるので、再配布する際は
+  OFL.txt と上記の著作権表示を必ず一緒に配ること。
+
+--------------------------------------------------------------------
+Zen Kaku Gothic New(同梱していない)
+--------------------------------------------------------------------
+
+  日本語の OG 画像には Zen Kaku Gothic New を使うが、**ビルド時に Google Fonts から
+  描く字だけを取得**しており(`src/lib/og-font.ts`)、リポジトリには置いていない。
+  こちらも SIL Open Font License 1.1(Copyright 2022 The Zen Kaku Gothic Project
+  Authors)。焼き上がった PNG に字形が含まれるのはフォントの通常の使用であって、
+  フォントそのものの再配布ではない。
+
+--------------------------------------------------------------------
+本アプリ自身のコードと素材
+--------------------------------------------------------------------
+
+LICENSE を参照(MIT)。会社・製品・所在地はすべて架空である。
+図はすべて計算して描いており、写真素材は使っていない。
